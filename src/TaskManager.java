@@ -22,12 +22,11 @@ public class TaskManager {
         System.out.println(tasks.get(task.getId()).getStatus());
     }
 
-    public ArrayList<String> getAllTasks() {
-        ArrayList<String> task = new ArrayList<>();
-        for (Task taskNew : tasks.values()) {
-            task.add(taskNew.getName());
+    public void getAllTasks() {
+        ArrayList<Task> task = new ArrayList<>(tasks.values());
+        for (Task value : task) {
+            System.out.println(value.getName());
         }
-        return task;
     }
 
     public void clearTaskList() {
