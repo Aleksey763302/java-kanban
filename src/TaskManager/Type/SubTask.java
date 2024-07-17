@@ -53,7 +53,6 @@ public class SubTask {
         this.id = id;
     }
 
-
     public int getEpicId() {
         return epicId;
     }
@@ -67,11 +66,26 @@ public class SubTask {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SubTask subTask = (SubTask) o;
-        return id == subTask.id && epicId == subTask.epicId && Objects.equals(name, subTask.name) && Objects.equals(description, subTask.description) && status == subTask.status;
+        return id == subTask.id
+                && epicId == subTask.epicId
+                && Objects.equals(name, subTask.name)
+                && Objects.equals(description, subTask.description)
+                && status == subTask.status;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(name, description, status, id, epicId);
+    }
+
+    @Override
+    public String toString() {
+        return "SubTask{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", id=" + id +
+                ", epicId=" + epicId +
+                '}';
     }
 }

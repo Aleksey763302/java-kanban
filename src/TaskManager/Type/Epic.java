@@ -4,7 +4,6 @@ import java.util.Objects;
 
 public class Epic {
 
-
     private String name;
     private String description;
     private TaskStatus status;
@@ -65,9 +64,13 @@ public class Epic {
         return Objects.hash(name, description, status, id);
     }
 
+    @Override
+    public String toString() {
+        return "Epic{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", id=" + id +
+                '}';
+    }
 }
-
-
-
-
-
