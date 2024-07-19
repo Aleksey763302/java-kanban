@@ -1,4 +1,6 @@
-package TaskManager.Type;
+package com.yandex.taskTracker.model;
+
+import com.yandex.taskTracker.service.TaskStatus;
 
 import java.util.Objects;
 

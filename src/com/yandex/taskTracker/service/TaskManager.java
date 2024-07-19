@@ -1,7 +1,8 @@
-import TaskManager.Type.Epic;
-import TaskManager.Type.SubTask;
-import TaskManager.Type.Task;
-import TaskManager.Type.TaskStatus;
+package com.yandex.taskTracker.service;
+
+import com.yandex.taskTracker.model.Epic;
+import com.yandex.taskTracker.model.SubTask;
+import com.yandex.taskTracker.model.Task;
 
 import java.util.HashMap;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package TaskManager.Type;
+package com.yandex.taskTracker.service;
 
 public enum TaskStatus {
     NEW,

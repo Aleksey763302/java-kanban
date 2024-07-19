@@ -1,27 +1,26 @@
-package TaskManager.Type;
+package com.yandex.taskTracker.model;
+
+import com.yandex.taskTracker.service.TaskStatus;
 
 import java.util.Objects;
 
-public class Epic {
+public class SubTask {
 
     private String name;
     private String description;
     private TaskStatus status;
     private int id;
+    private int epicId;
 
-    public Epic(String name, String description) {
+    public SubTask(String name, String description) {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
         this.id = hashCode();
     }
 
-    public int getId() {
-        return id;
-    }
+    public SubTask() {
 
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -48,29 +47,47 @@ public class Epic {
         this.status = status;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getEpicId() {
+        return epicId;
+    }
+
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Epic epic = (Epic) o;
-        return id == epic.id
-                && Objects.equals(name, epic.name)
-                && Objects.equals(description, epic.description)
-                && status == epic.status;
+        SubTask subTask = (SubTask) o;
+        return id == subTask.id
+                && epicId == subTask.epicId
+                && Objects.equals(name, subTask.name)
+                && Objects.equals(description, subTask.description)
+                && status == subTask.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, status, id);
+        return Objects.hash(name, description, status, id, epicId);
     }
 
     @Override
     public String toString() {
-        return "Epic{" +
+        return "SubTask{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 ", id=" + id +
+                ", epicId=" + epicId +
                 '}';
     }
 }
