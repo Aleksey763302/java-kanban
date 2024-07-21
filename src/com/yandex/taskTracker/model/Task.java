@@ -17,14 +17,12 @@ public class Task {
         this.status = TaskStatus.NEW;
         this.id = hashCode();
     }
-
-    public Task(String name, String description, TaskStatus status) {
+    public Task(String name, String description, TaskStatus status, int id) {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.id = id;
     }
-
-
     public String getName() {
         return name;
     }
