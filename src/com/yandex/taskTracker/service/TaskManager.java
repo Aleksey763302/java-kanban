@@ -65,7 +65,7 @@ public class TaskManager {
         ArrayList<TaskStatus> status = new ArrayList<>();
         for (SubTask subTaskId : subTasks.values()) {
             if (subTaskId.getEpicId() == id) {
-                status.add(subTasks.get(subTaskId.getId()).getStatus()); //проверить
+                status.add(subTasks.get(subTaskId.getId()).getStatus());
             }
         }
         ArrayList<TaskStatus> statusNew = new ArrayList<>();
@@ -81,7 +81,7 @@ public class TaskManager {
             }
         }
         if (!statusInProgress.isEmpty() && !statusNew.isEmpty() || (statusInProgress.isEmpty() && !statusNew.isEmpty())) {
-            epics.get(id).setStatus(TaskStatus.IN_PROGRESS); //проверить
+            epics.get(id).setStatus(TaskStatus.IN_PROGRESS);
         } else if (!statusDone.isEmpty() && statusInProgress.isEmpty() && statusNew.isEmpty()) {
             epics.get(id).setStatus(TaskStatus.DONE);
         } else {
@@ -90,11 +90,11 @@ public class TaskManager {
     }
 
     public void addSubTask(SubTask subTask) {
-        subTasks.put(subTask.getId(), subTask); //проверить
+        subTasks.put(subTask.getId(), subTask);
         checkStatus(subTask.getEpicId());
     }
 
-    public ArrayList<SubTask> getAllSubTasksEpic(int id) { //проверить
+    public ArrayList<SubTask> getAllSubTasksEpic(int id) {
         ArrayList<SubTask> subTasksList = new ArrayList<>();
         for (SubTask subTask : subTasks.values()) {
             if (subTask.getEpicId() == id) {
