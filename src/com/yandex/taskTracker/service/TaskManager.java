@@ -3,6 +3,7 @@ package com.yandex.taskTracker.service;
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
+import com.yandex.taskTracker.model.TaskStatus;
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -62,10 +63,11 @@ public class TaskManager {
     }
 
     private void checkStatus(int id) {
+        ArrayList<Integer> subtaskId = new ArrayList<>(epics.get(id).getSubTasksList());
         ArrayList<TaskStatus> status = new ArrayList<>();
-        for (SubTask subTaskId : subTasks.values()) {
-            if (subTaskId.getEpicId() == id) {
-                status.add(subTasks.get(subTaskId.getId()).getStatus());
+        for (Integer subTaskId : subTasks.keySet()) {
+            if (subtaskId.contains(subTaskId)) {
+                status.add(subTasks.get(subTaskId).getStatus());
             }
         }
         ArrayList<TaskStatus> statusNew = new ArrayList<>();
@@ -80,9 +82,12 @@ public class TaskManager {
                 statusNew.add(TaskStatus.NEW);
             }
         }
-        if (!statusInProgress.isEmpty() && !statusNew.isEmpty() || (statusInProgress.isEmpty() && !statusNew.isEmpty())) {
+        if (!statusInProgress.isEmpty() && !statusNew.isEmpty() && !statusDone.isEmpty()
+                || (!statusInProgress.isEmpty() && !statusNew.isEmpty())
+                || (statusInProgress.isEmpty() && !statusNew.isEmpty() && !statusDone.isEmpty())
+                || (!statusInProgress.isEmpty() && !statusDone.isEmpty())) {
             epics.get(id).setStatus(TaskStatus.IN_PROGRESS);
-        } else if (!statusDone.isEmpty() && statusInProgress.isEmpty() && statusNew.isEmpty()) {
+        } else if (!statusDone.isEmpty()) {
             epics.get(id).setStatus(TaskStatus.DONE);
         } else {
             epics.get(id).setStatus(TaskStatus.NEW);
@@ -91,6 +96,7 @@ public class TaskManager {
 
     public void addSubTask(SubTask subTask) {
         subTasks.put(subTask.getId(), subTask);
+        epics.get(subTask.getEpicId()).addSubtaskId(subTask.getId());
         checkStatus(subTask.getEpicId());
     }
 
@@ -111,19 +117,16 @@ public class TaskManager {
     public void removeSubTask(int id) {
         int epicId = subTasks.get(id).getEpicId();
         subTasks.remove(id);
+        epics.get(epicId).removeSubTaskId(id);
         checkStatus(epicId);
     }
 
     public void clearEpicSubTasks(int id) {
-        ArrayList<Integer> idSubTasks = new ArrayList<>();
-        for (SubTask subTask: subTasks.values()) {
-            if(subTask.getEpicId() == id){
-                idSubTasks.add(subTask.getId());
-            }
+        ArrayList<Integer> idSubTasks = new ArrayList<>(epics.get(id).getSubTasksList());
+        for (Integer subTaskId:idSubTasks) {
+            subTasks.remove(subTaskId);
+            epics.get(id).clearSubTaskId();
         }
-            for (int i = 0; i < idSubTasks.size(); i++) {
-                subTasks.remove(idSubTasks.get(i));
-            }
         checkStatus(id);
     }
 
