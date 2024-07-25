@@ -3,7 +3,6 @@ package com.yandex.taskTracker.model;
 import java.util.ArrayList;
 
 public class Epic extends Task {
-
     private final ArrayList<Integer> subTasksId = new ArrayList<>();
     public Epic(String name, String description) {
         super(name,description);
