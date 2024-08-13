@@ -4,12 +4,15 @@ import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
 import com.yandex.taskTracker.model.TaskStatus;
+import com.yandex.taskTracker.service.HistoryManager;
+import com.yandex.taskTracker.service.InMemoryTaskManager;
+import com.yandex.taskTracker.service.Managers;
 import com.yandex.taskTracker.service.TaskManager;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Поехали!");
-        TaskManager tm = new TaskManager();
+
+        TaskManager tm = new Managers().getDefault();
         Task task1 = new Task("Task 1","description task");
         Task task2 = new Task("Task 2","description task");
 
@@ -29,23 +32,43 @@ public class Main {
         tm.addSubTask(subTask2);
         tm.addSubTask(subTask3);
 
-        System.out.println(tm.getAllTasks());
-        System.out.println(tm.getAllEpics());
-        System.out.println(tm.getAllSubTasksEpic(epic1.getId()));
+        tm.searchTask(task2.getId());
+        tm.searchEpic(epic1.getId());
+        tm.searchSubTask(subTask1.getId());
+        tm.searchSubTask(subTask1.getId());
+        tm.searchSubTask(subTask1.getId());
+        tm.searchSubTask(subTask1.getId());
+        tm.searchEpic(epic1.getId());
+        tm.searchEpic(epic1.getId());
+        tm.searchEpic(epic1.getId());
+        tm.searchTask(task2.getId());
+        tm.searchTask(task2.getId());
+        tm.searchTask(task2.getId());
 
-        task1.setStatus(TaskStatus.DONE);
-        task2.setStatus(TaskStatus.IN_PROGRESS);
-        subTask1.setStatus(TaskStatus.IN_PROGRESS);
-        subTask2.setStatus(TaskStatus.DONE);
-        subTask3.setStatus(TaskStatus.DONE);
+        System.out.println("Поехали!");
+        printAllTasks(tm);
+    }
 
-        tm.updateSabTask(subTask1);
-        tm.updateSabTask(subTask2);
-        tm.updateSabTask(subTask3);
-        tm.removeSubTask(subTask1.getId());
+    private static void printAllTasks(TaskManager tm) {
+        System.out.println("Задачи:");
+        for (Task task : tm.getAllTasks()) {
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Task epic : tm.getAllEpics()) {
+            System.out.println(epic);
 
-        System.out.println(tm.getAllTasks());
-        System.out.println(tm.getAllEpics());
-        System.out.println(tm.getAllSubTasksEpic(epic1.getId()));
+            for (Task task : tm.getAllSubTasksEpic(epic.getId())) {
+                System.out.println("--> " + task);
+            }
+        }
+        System.out.println("Подзадачи:");
+        for (Task subtask : tm.getAllSubTasks()) {
+            System.out.println(subtask);
+        }
+        System.out.println("История:");
+        for (Task task : tm.getHistory() ) {
+            System.out.println(task);
+        }
     }
 }
