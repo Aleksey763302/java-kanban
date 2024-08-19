@@ -1,6 +1,5 @@
 package com.yandex.taskTracker.Test.TestModel;
 
-import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.Task;
 import com.yandex.taskTracker.model.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,11 +8,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
-Task task;
+    Task task;
+
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         task = new Task("Name", "Description");
     }
+
     @Test
     void getName() {
         String name = task.getName();
@@ -43,26 +44,26 @@ Task task;
     @Test
     void getStatus() {
         TaskStatus taskStatus = task.getStatus();
-        assertEquals(TaskStatus.NEW,taskStatus);
+        assertEquals(TaskStatus.NEW, taskStatus);
     }
 
     @Test
     void setStatus() {
         task.setStatus(TaskStatus.DONE);
         TaskStatus taskStatus = task.getStatus();
-        assertEquals(TaskStatus.DONE,taskStatus);
+        assertEquals(TaskStatus.DONE, taskStatus);
     }
 
     @Test
     void getId() {
         int id = task.getId();
-        assertEquals(task.getId(),id);
+        assertEquals(task.getId(), id);
     }
 
     @Test
     void setId() {
         int id = task.getId();
         task.setId(20);
-        assertNotEquals(task.getId(),id);
+        assertNotEquals(task.getId(), id);
     }
 }

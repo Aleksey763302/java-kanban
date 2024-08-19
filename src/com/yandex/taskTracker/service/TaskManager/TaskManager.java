@@ -1,4 +1,4 @@
-package com.yandex.taskTracker.service;
+package com.yandex.taskTracker.service.TaskManager;
 
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
@@ -6,7 +6,7 @@ import com.yandex.taskTracker.model.Task;
 
 import java.util.ArrayList;
 
-public interface  TaskManager {
+public interface TaskManager {
 
     ArrayList<Task> getHistory();
 
@@ -37,6 +37,7 @@ public interface  TaskManager {
     void clearAllSubtasks();
 
     ArrayList<SubTask> getAllSubTasksEpic(int id);
+
     ArrayList<SubTask> getAllSubTasks();
 
     SubTask searchSubTask(int id);

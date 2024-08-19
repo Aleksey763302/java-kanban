@@ -1,7 +1,7 @@
 package com.yandex.taskTracker.Test.TestService;
 
 import com.yandex.taskTracker.model.Task;
-import com.yandex.taskTracker.service.HistoryManager;
+import com.yandex.taskTracker.service.HistoryManager.HistoryManager;
 import com.yandex.taskTracker.service.Managers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,10 +12,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
     private static HistoryManager historyManager;
+
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         historyManager = Managers.getDefaultHistory();
     }
+
     @Test
     void getHistory() {
         Task task = new Task("Test getHistory", "Test getHistory description");
@@ -23,7 +25,7 @@ class InMemoryHistoryManagerTest {
         history.add(task);
         historyManager.add(task);
 
-        ArrayList <Task> saveHistory = historyManager.getHistory();
+        ArrayList<Task> saveHistory = historyManager.getHistory();
         assertEquals(history, saveHistory, "списки историй разные");
     }
 

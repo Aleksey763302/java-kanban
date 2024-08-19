@@ -3,16 +3,13 @@ package com.yandex.taskTracker;
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
-import com.yandex.taskTracker.model.TaskStatus;
-import com.yandex.taskTracker.service.HistoryManager;
-import com.yandex.taskTracker.service.InMemoryTaskManager;
 import com.yandex.taskTracker.service.Managers;
-import com.yandex.taskTracker.service.TaskManager;
+import com.yandex.taskTracker.service.TaskManager.TaskManager;
 
 public class Main {
     public static void main(String[] args) {
 
-        TaskManager tm = new Managers().getDefault();
+        TaskManager tm =  Managers.getDefault();
         Task task1 = new Task("Task 1","description task");
         Task task2 = new Task("Task 2","description task");
 
