@@ -5,10 +5,10 @@ import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
 
 import java.util.ArrayList;
-
+import java.util.LinkedList;
 public interface TaskManager {
 
-    ArrayList<Task> getHistory();
+    LinkedList<Task> getHistory();
 
     void addTask(Task task);
 

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-
+import java.util.LinkedList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
@@ -25,7 +25,7 @@ class InMemoryHistoryManagerTest {
         history.add(task);
         historyManager.add(task);
 
-        ArrayList<Task> saveHistory = historyManager.getHistory();
+        LinkedList<Task> saveHistory = historyManager.getHistory();
         assertEquals(history, saveHistory, "списки историй разные");
     }
 
@@ -33,7 +33,7 @@ class InMemoryHistoryManagerTest {
     void addHistory() {
         Task task = new Task("Test addHistory", "Test addHistory description");
         historyManager.add(task);
-        final ArrayList<Task> history = historyManager.getHistory();
+        final LinkedList<Task> history = historyManager.getHistory();
         assertNotNull(history, "История не пустая.");
         assertEquals(1, history.size(), "История не пустая.");
     }

@@ -10,7 +10,7 @@ import com.yandex.taskTracker.service.Managers;
 
 import java.util.HashMap;
 import java.util.ArrayList;
-
+import java.util.LinkedList;
 public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
@@ -19,7 +19,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
-    public ArrayList<Task> getHistory() {
+    public LinkedList<Task> getHistory() {
         return historyManager.getHistory();
     }
 
