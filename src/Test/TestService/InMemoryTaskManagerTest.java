@@ -1,4 +1,4 @@
-package com.yandex.taskTracker.Test.TestService;
+package Test.TestService;
 
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;

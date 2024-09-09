@@ -1,4 +1,4 @@
-package com.yandex.taskTracker.Test.TestModel;
+package Test.TestModel;
 
 import com.yandex.taskTracker.model.SubTask;
 import org.junit.jupiter.api.BeforeEach;

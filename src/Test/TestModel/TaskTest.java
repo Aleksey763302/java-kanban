@@ -1,4 +1,4 @@
-package com.yandex.taskTracker.Test.TestModel;
+package Test.TestModel;
 
 import com.yandex.taskTracker.model.Task;
 import com.yandex.taskTracker.model.TaskStatus;
