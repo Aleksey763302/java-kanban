@@ -33,7 +33,6 @@ public class Main {
         System.out.println("Поехали!");
         printAllTasks(tm);
     }
-    
     private static void printAllTasks(TaskManager tm) {
         System.out.println("Задачи:");
         for (Task task : tm.getAllTasks()) {
@@ -51,7 +50,7 @@ public class Main {
             System.out.println(subtask);
         }
         System.out.println("История:");
-        for (Task task : tm.getHistory() ) {
+        for (Task task : tm.getHistory()) {
             System.out.println(task);
         }
     }
