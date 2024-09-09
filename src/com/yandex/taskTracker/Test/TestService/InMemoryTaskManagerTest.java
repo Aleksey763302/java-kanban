@@ -46,12 +46,9 @@ class InMemoryTaskManagerTest {
         Task task = new Task("Test RemoveTask", "Test RemoveTask description");
         taskManager.addTask(task);
         final int taskId = task.getId();
-
         taskManager.removeTask(taskId);
-        Task saveTask = taskManager.searchTask(taskId);
-
-        assertNull(saveTask, "задача не возвращается");
-        assertNotEquals(task, saveTask, "задача не удалилась.");
+        List<Task> taskList = taskManager.getAllTasks();
+        assertFalse(taskList.contains(taskId), "задача не удалилась.");
     }
 
     @Test
@@ -79,10 +76,13 @@ class InMemoryTaskManagerTest {
     void addEpic() {
         Epic epic = new Epic("Test addNewEpic", "Test addNewEpic description");
         taskManager.addEpic(epic);
-
+        SubTask subTask = new SubTask("Test addNewEpic", "Test addNewEpic description",epic.getId());
+        taskManager.addSubTask(subTask);
+        taskManager.removeSubTask(subTask.getId());
         final int epicId = epic.getId();
         final Epic savedEpic = taskManager.searchEpic(epicId);
 
+        assertEquals(0,epic.getSubTasksList().size(),"эпик содержит неактуальные подзадачи");
         assertNotNull(savedEpic, "Эпик не найден.");
         assertEquals(epic, savedEpic, "Эпики не совпадают.");
 
@@ -100,8 +100,8 @@ class InMemoryTaskManagerTest {
         taskManager.addEpic(epic);
         final int epicId = epic.getId();
         taskManager.removeEpic(epicId);
-        final Epic savedEpic = taskManager.searchEpic(epicId);
-        assertNull(savedEpic, "Эпик не удалился.");
+        List<Epic> epics = taskManager.getAllEpics();
+        assertFalse(epics.contains(epicId),"эпик не удалился из списка эпиков");
     }
 
     @Test
@@ -165,13 +165,15 @@ class InMemoryTaskManagerTest {
 
     @Test
     void removeSubtask() {
-        Epic epic = new Epic("Test removeSubtask", "Test removeSubtask description");
-        SubTask subtask = new SubTask("Test removeSubtask", "Test removeSubtask description", epic.getId());
+        Epic epic = new Epic("Test removeSubtask", " description");
+        SubTask subtask = new SubTask("Test removeSubtask", " description", epic.getId());
         taskManager.addEpic(epic);
         taskManager.addSubTask(subtask);
         final int subtaskId = subtask.getId();
         taskManager.removeSubTask(subtaskId);
-        final SubTask savedSubtask = taskManager.searchSubTask(subtaskId);
-        assertNull(savedSubtask, "Подзадача не удалилилась.");
+        List<Integer> id = taskManager.searchEpic(epic.getId()).getSubTasksList();
+        assertFalse(id.contains(subtaskId),"подзадача не удалилась из эпика");
+        List<SubTask> subTasks = taskManager.getAllSubTasks();
+        assertFalse(subTasks.contains(subtaskId),"подзадача не удалилась из скиска подзадач");
     }
 }
