@@ -24,7 +24,6 @@ public class Main {
         tm.addTask(task2);
         tm.addEpic(epic1);
         tm.addEpic(epic2);
-
         tm.addSubTask(subTask1);
         tm.addSubTask(subTask2);
         tm.addSubTask(subTask3);
@@ -32,15 +31,10 @@ public class Main {
         tm.searchTask(task2.getId());
         tm.searchEpic(epic1.getId());
         tm.searchSubTask(subTask1.getId());
+        tm.searchSubTask(subTask2.getId());
         tm.searchSubTask(subTask1.getId());
-        tm.searchSubTask(subTask1.getId());
-        tm.searchSubTask(subTask1.getId());
-        tm.searchEpic(epic1.getId());
-        tm.searchEpic(epic1.getId());
-        tm.searchEpic(epic1.getId());
-        tm.searchTask(task2.getId());
-        tm.searchTask(task2.getId());
-        tm.searchTask(task2.getId());
+        tm.removeTask(task2.getId());
+        tm.removeSubTask(subTask2.getId());
 
         System.out.println("Поехали!");
         printAllTasks(tm);
