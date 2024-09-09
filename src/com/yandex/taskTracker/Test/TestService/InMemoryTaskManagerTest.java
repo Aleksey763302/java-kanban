@@ -37,7 +37,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void RemoveTask() {
+    void removeTask() {
         Task task = new Task("Test RemoveTask", "Test RemoveTask description");
         taskManager.addTask(task);
         final int taskId = task.getId();
@@ -71,12 +71,12 @@ class InMemoryTaskManagerTest {
     void addEpic() {
         Epic epic = new Epic("Test addNewEpic", "Test addNewEpic description");
         taskManager.addEpic(epic);
-        SubTask subTask = new SubTask("Test addNewEpic", "Test addNewEpic description",epic.getId());
+        SubTask subTask = new SubTask("Test addNewEpic", "Test addNewEpic description", epic.getId());
         taskManager.addSubTask(subTask);
         taskManager.removeSubTask(subTask.getId());
         final int epicId = epic.getId();
         final Epic savedEpic = taskManager.searchEpic(epicId);
-        assertEquals(0,epic.getSubTasksList().size(),"эпик содержит неактуальные подзадачи");
+        assertEquals(0, epic.getSubTasksList().size(), "эпик содержит неактуальные подзадачи");
         assertNotNull(savedEpic, "Эпик не найден.");
         assertEquals(epic, savedEpic, "Эпики не совпадают.");
         final List<Epic> epics = taskManager.getAllEpics();
@@ -93,7 +93,7 @@ class InMemoryTaskManagerTest {
         final int epicId = epic.getId();
         taskManager.removeEpic(epicId);
         List<Epic> epics = taskManager.getAllEpics();
-        assertFalse(epics.contains(epicId),"эпик не удалился из списка эпиков");
+        assertFalse(epics.contains(epicId), "эпик не удалился из списка эпиков");
     }
 
     @Test
@@ -159,8 +159,8 @@ class InMemoryTaskManagerTest {
         final int subtaskId = subtask.getId();
         taskManager.removeSubTask(subtaskId);
         List<Integer> id = taskManager.searchEpic(epic.getId()).getSubTasksList();
-        assertFalse(id.contains(subtaskId),"подзадача не удалилась из эпика");
+        assertFalse(id.contains(subtaskId), "подзадача не удалилась из эпика");
         List<SubTask> subTasks = taskManager.getAllSubTasks();
-        assertFalse(subTasks.contains(subtaskId),"подзадача не удалилась из скиска подзадач");
+        assertFalse(subTasks.contains(subtaskId), "подзадача не удалилась из скиска подзадач");
     }
 }
