@@ -10,7 +10,6 @@ import com.yandex.taskTracker.service.TaskManager.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,15 +26,11 @@ class InMemoryTaskManagerTest {
     void addNewTask() {
         Task task = new Task("Test addNewTask", "Test addNewTask description");
         taskManager.addTask(task);
-
         final int taskId = task.getId();
         final Task savedTask = taskManager.searchTask(taskId);
-
         assertNotNull(savedTask, "Задача не найдена.");
         assertEquals(task, savedTask, "Задачи не совпадают.");
-
         final List<Task> tasks = taskManager.getAllTasks();
-
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
         assertEquals(task, tasks.get(0), "Задачи не совпадают.");
@@ -81,13 +76,10 @@ class InMemoryTaskManagerTest {
         taskManager.removeSubTask(subTask.getId());
         final int epicId = epic.getId();
         final Epic savedEpic = taskManager.searchEpic(epicId);
-
         assertEquals(0,epic.getSubTasksList().size(),"эпик содержит неактуальные подзадачи");
         assertNotNull(savedEpic, "Эпик не найден.");
         assertEquals(epic, savedEpic, "Эпики не совпадают.");
-
         final List<Epic> epics = taskManager.getAllEpics();
-
         assertNotNull(epics, "Эпики не возвращаются.");
         assertEquals(1, epics.size(), "Неверное количество эпиков.");
         assertEquals(epic, epics.get(0), "Эпики не совпадают.");
@@ -149,16 +141,11 @@ class InMemoryTaskManagerTest {
         SubTask subTask = new SubTask("Test addSubtask", "Test addSubtask description", epic.getId());
         taskManager.addSubTask(subTask);
         final int subtaskId = subTask.getId();
-
         final SubTask savedSubtask = taskManager.searchSubTask(subtaskId);
-
         assertNotNull(savedSubtask, "Подзадача не найдена.");
         assertEquals(subTask, savedSubtask, "Подзадачи не совпадают.");
-
-        final ArrayList<SubTask> subTasks = taskManager.getAllSubTasks();
-
+        final List<SubTask> subTasks = taskManager.getAllSubTasks();
         assertNotNull(subTasks, "Подзадачи не возвращаются.");
-
         assertEquals(1, subTasks.size(), "Неверное количество подзадач.");
         assertEquals(subTask, subTasks.get(0), "Подзадачи не совпадают.");
     }
