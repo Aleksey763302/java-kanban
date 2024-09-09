@@ -1,7 +1,6 @@
 package com.yandex.taskTracker.model;
 
 public class Node <T extends Task> {
-
     public T data;
     public Node<T> next;
     public Node<T> prev;
