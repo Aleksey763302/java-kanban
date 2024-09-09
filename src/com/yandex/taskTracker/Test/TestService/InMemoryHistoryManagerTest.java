@@ -7,8 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryHistoryManagerTest {
     private static HistoryManager historyManager;
@@ -24,17 +25,37 @@ class InMemoryHistoryManagerTest {
         ArrayList<Task> history = new ArrayList<>();
         history.add(task);
         historyManager.add(task);
-
-        LinkedList<Task> saveHistory = historyManager.getHistory();
+        List<Task> saveHistory = historyManager.getHistory();
         assertEquals(history, saveHistory, "списки историй разные");
     }
 
     @Test
-    void addHistory() {
-        Task task = new Task("Test addHistory", "Test addHistory description");
-        historyManager.add(task);
-        final LinkedList<Task> history = historyManager.getHistory();
-        assertNotNull(history, "История не пустая.");
-        assertEquals(1, history.size(), "История не пустая.");
+    void addedTaskInEndListIfWasPreviouslyAdded() {
+        Task task1 = new Task("Test addedTaskInEndListIfWasPreviouslyAdded", "task1 description");
+        Task task2 = new Task("Test addedTaskInEndListIfWasPreviouslyAdded", "task2 description");
+        Task task3 = new Task("Test addedTaskInEndListIfWasPreviouslyAdded", "task3 description");
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.add(task3);
+        historyManager.add(task2);
+        final List<Task> history = historyManager.getHistory();
+        Task lastTask = history.get(2);
+        Task secondTask = history.get(1);
+        assertNotNull(history, "История пустая.");
+        assertEquals(lastTask.getId(), task2.getId(), "Задача не добавилась");
+        assertNotEquals(secondTask.getId(), task2.getId(), "задача не удалилась");
+        assertEquals(3, history.size(), "колличество задачь не совподает");
+    }
+    @Test
+    void removeTaskOfHistory(){
+        Task task1 = new Task("Test removeTask", "task1 description");
+        Task task2 = new Task("Test removeTask", "task2 description");
+        Task task3 = new Task("Test removeTask", "task3 description");
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.add(task3);
+        historyManager.remove(task2.getId());
+        List<Task> getTask = historyManager.getHistory();
+        assertEquals(2,getTask.size(), "задача не удалилась");
     }
 }
