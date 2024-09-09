@@ -1,7 +1,6 @@
 package com.yandex.taskTracker.Test.TestModel;
 
 import com.yandex.taskTracker.model.Epic;
-import com.yandex.taskTracker.model.SubTask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
