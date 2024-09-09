@@ -1,4 +1,4 @@
-package test.TestService;
+package test.testService;
 
 import com.yandex.taskTracker.model.Task;
 import com.yandex.taskTracker.service.HistoryManager.HistoryManager;
