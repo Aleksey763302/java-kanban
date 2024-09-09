@@ -5,6 +5,7 @@ import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
 
 import java.util.List;
+
 public interface TaskManager {
 
     List<Task> getHistory();
