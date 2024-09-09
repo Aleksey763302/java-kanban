@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -46,8 +47,9 @@ class InMemoryHistoryManagerTest {
         assertNotEquals(secondTask.getId(), task2.getId(), "задача не удалилась");
         assertEquals(3, history.size(), "колличество задачь не совподает");
     }
+
     @Test
-    void removeTaskOfHistory(){
+    void removeTaskOfHistory() {
         Task task1 = new Task("Test removeTask", "task1 description");
         Task task2 = new Task("Test removeTask", "task2 description");
         Task task3 = new Task("Test removeTask", "task3 description");
@@ -56,6 +58,6 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task3);
         historyManager.remove(task2.getId());
         List<Task> getTask = historyManager.getHistory();
-        assertEquals(2,getTask.size(), "задача не удалилась");
+        assertEquals(2, getTask.size(), "задача не удалилась");
     }
 }
