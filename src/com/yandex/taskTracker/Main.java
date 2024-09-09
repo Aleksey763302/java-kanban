@@ -33,6 +33,7 @@ public class Main {
         System.out.println("Поехали!");
         printAllTasks(tm);
     }
+    
     private static void printAllTasks(TaskManager tm) {
         System.out.println("Задачи:");
         for (Task task : tm.getAllTasks()) {
@@ -41,7 +42,6 @@ public class Main {
         System.out.println("Эпики:");
         for (Task epic : tm.getAllEpics()) {
             System.out.println(epic);
-
             for (Task task : tm.getAllSubTasksEpic(epic.getId())) {
                 System.out.println("--> " + task);
             }
