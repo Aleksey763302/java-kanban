@@ -1,4 +1,4 @@
-package Test.TestModel;
+package test.testModel;
 
 import com.yandex.taskTracker.model.Epic;
 import org.junit.jupiter.api.BeforeEach;
