@@ -4,17 +4,17 @@ import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.List;
+
 public interface TaskManager {
 
-    LinkedList<Task> getHistory();
+    List<Task> getHistory();
 
     void addTask(Task task);
 
     Task searchTask(int id);
 
-    ArrayList<Task> getAllTasks();
+    List<Task> getAllTasks();
 
     void clearTasks();
 
@@ -24,7 +24,7 @@ public interface TaskManager {
 
     void addEpic(Epic epic);
 
-    ArrayList<Epic> getAllEpics();
+    List<Epic> getAllEpics();
 
     Epic searchEpic(int id);
 
@@ -36,9 +36,9 @@ public interface TaskManager {
 
     void clearAllSubtasks();
 
-    ArrayList<SubTask> getAllSubTasksEpic(int id);
+    List<SubTask> getAllSubTasksEpic(int id);
 
-    ArrayList<SubTask> getAllSubTasks();
+    List<SubTask> getAllSubTasks();
 
     SubTask searchSubTask(int id);
 
