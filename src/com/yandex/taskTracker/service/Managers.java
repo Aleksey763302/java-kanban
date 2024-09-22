@@ -1,5 +1,6 @@
 package com.yandex.taskTracker.service;
 
+import com.yandex.taskTracker.exceptions.ManagerSaveException;
 import com.yandex.taskTracker.service.HistoryManager.HistoryManager;
 import com.yandex.taskTracker.service.HistoryManager.InMemoryHistoryManager;
 import com.yandex.taskTracker.service.TaskManager.FileBackedTaskManager;
@@ -14,7 +15,7 @@ public class Managers {
         return (TaskManager) new InMemoryTaskManager();
     }
 
-    public static FileBackedTaskManager loadFromFile(File file){
+    public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
         FileBackedTaskManager.saveFile = file.toPath();
         return new FileBackedTaskManager();
     }
