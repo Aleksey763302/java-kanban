@@ -13,7 +13,7 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
-        this.id = hashCode();
+        this.id = 0;
     }
 
     public Task(String name, String description, TaskStatus status, int id) {
