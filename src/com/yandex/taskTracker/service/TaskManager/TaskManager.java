@@ -1,5 +1,6 @@
 package com.yandex.taskTracker.service.TaskManager;
 
+import com.yandex.taskTracker.exceptions.ManagerSaveException;
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
@@ -10,7 +11,7 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
-    void addTask(Task task);
+    void addTask(Task task) throws ManagerSaveException;
 
     Task searchTask(int id);
 
@@ -22,7 +23,7 @@ public interface TaskManager {
 
     void updateTask(Task task);
 
-    void addEpic(Epic epic);
+    void addEpic(Epic epic) throws ManagerSaveException;
 
     List<Epic> getAllEpics();
 
@@ -32,7 +33,7 @@ public interface TaskManager {
 
     void clearAllEpics();
 
-    void addSubTask(SubTask subTask);
+    void addSubTask(SubTask subTask) throws ManagerSaveException;
 
     void clearAllSubtasks();
 
