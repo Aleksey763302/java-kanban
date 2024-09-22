@@ -1,5 +1,6 @@
 package com.yandex.taskTracker.service.TaskManager;
 
+import com.yandex.taskTracker.exceptions.ManagerSaveException;
 import com.yandex.taskTracker.model.*;
 
 import java.io.FileWriter;
@@ -12,30 +13,30 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     public static Path saveFile;
 
-    public FileBackedTaskManager() {
+    public FileBackedTaskManager() throws ManagerSaveException {
         try {
             loadTasks();
             Files.delete(saveFile);
-            Files.createFile(Paths.get("save.txt"));
+            Files.createFile(Paths.get("resources\\save.txt"));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ManagerSaveException("файл с данными не обнаружен", e);
         }
     }
 
     @Override
-    public void addTask(Task task) {
+    public void addTask(Task task) throws ManagerSaveException {
         super.addTask(task);
         save();
     }
 
     @Override
-    public void addEpic(Epic epic) {
+    public void addEpic(Epic epic) throws ManagerSaveException {
         super.addEpic(epic);
         save();
     }
 
     @Override
-    public void addSubTask(SubTask subtask) {
+    public void addSubTask(SubTask subtask) throws ManagerSaveException {
         super.addSubTask(subtask);
         save();
     }
@@ -63,8 +64,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    private void save() {
-        try (FileWriter fileWriter = new FileWriter("save.txt")) {
+    private void save() throws ManagerSaveException {
+        try (FileWriter fileWriter = new FileWriter("resources\\save.txt")) {
             List<Task> tasks = getAllTasks();
             List<Epic> epics = getAllEpics();
             List<SubTask> subTasks = getAllSubTasks();
@@ -78,7 +79,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 fileWriter.write(toString(task));
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ManagerSaveException("ошибка при записи в файл", e);
         }
     }
 
@@ -124,7 +125,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } else {
             task = null;
         }
-
         return task;
     }
 }
