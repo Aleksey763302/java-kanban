@@ -3,24 +3,19 @@ package com.yandex.taskTracker.service.TaskManager;
 import com.yandex.taskTracker.exceptions.ManagerSaveException;
 import com.yandex.taskTracker.model.*;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    public static Path saveFile;
+    public Path saveFile;
 
-    public FileBackedTaskManager() throws ManagerSaveException {
-        try {
-            loadTasks();
-            Files.delete(saveFile);
-            Files.createFile(Paths.get("resources\\save.txt"));
-        } catch (IOException e) {
-            throw new ManagerSaveException("файл с данными не обнаружен", e);
-        }
+    public FileBackedTaskManager(File file) {
+        saveFile = file.toPath();
+        loadTasks();
     }
 
     @Override
@@ -65,7 +60,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void save() throws ManagerSaveException {
-        try (FileWriter fileWriter = new FileWriter("resources\\save.txt")) {
+        try (FileWriter fileWriter = new FileWriter(saveFile.toString())) {
             List<Task> tasks = getAllTasks();
             List<Epic> epics = getAllEpics();
             List<SubTask> subTasks = getAllSubTasks();
@@ -79,7 +74,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 fileWriter.write(toString(task));
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("ошибка при записи в файл", e);
+            throw new ManagerSaveException(e);
         }
     }
 
