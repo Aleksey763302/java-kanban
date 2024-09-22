@@ -1,5 +1,6 @@
 package com.yandex.taskTracker.service.TaskManager;
 
+import com.yandex.taskTracker.exceptions.ManagerSaveException;
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
@@ -24,8 +25,17 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+    public int giveID() {
+        int id = tasks.size() + epics.size() + subTasks.size();
+        if (tasks.containsKey(id) || epics.containsKey(id) || subTasks.containsKey(id)) {
+            id *= 2;
+        }
+        return id;
+    }
+
     @Override
-    public void addTask(Task task) {
+    public void addTask(Task task) throws ManagerSaveException {
+        task.setId(giveID());
         tasks.put(task.getId(), task);
     }
 
@@ -59,7 +69,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addEpic(Epic epic) {
+    public void addEpic(Epic epic) throws ManagerSaveException {
+        epic.setId(giveID());
         epics.put(epic.getId(), epic);
     }
 
@@ -88,7 +99,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addSubTask(SubTask subTask) {
+    public void addSubTask(SubTask subTask) throws ManagerSaveException {
+        subTask.setId(giveID());
         subTasks.put(subTask.getId(), subTask);
         epics.get(subTask.getEpicId()).addSubtaskId(subTask.getId());
         checkStatus(subTask.getEpicId());
