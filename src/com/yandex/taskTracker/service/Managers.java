@@ -16,8 +16,7 @@ public class Managers {
     }
 
     public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
-        FileBackedTaskManager.saveFile = file.toPath();
-        return new FileBackedTaskManager();
+        return new FileBackedTaskManager(file);
     }
 
     public static HistoryManager getDefaultHistory() {
