@@ -19,19 +19,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void addTask(Task task) throws ManagerSaveException {
+    public void addTask(Task task) {
         super.addTask(task);
         save();
     }
 
     @Override
-    public void addEpic(Epic epic) throws ManagerSaveException {
+    public void addEpic(Epic epic) {
         super.addEpic(epic);
         save();
     }
 
     @Override
-    public void addSubTask(SubTask subtask) throws ManagerSaveException {
+    public void addSubTask(SubTask subtask) {
         super.addSubTask(subtask);
         save();
     }
@@ -60,8 +60,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    private void save() throws ManagerSaveException {
+    private void save() {
         try (FileWriter fileWriter = new FileWriter(saveFile.toString())) {
+            if (saveFile == null) {
+                throw new ManagerSaveException("файл для записи отсутствует");
+            }
             List<Task> tasks = getAllTasks();
             List<Epic> epics = getAllEpics();
             List<SubTask> subTasks = getAllSubTasks();
@@ -74,8 +77,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             for (Task task : subTasks) {
                 fileWriter.write(toString(task));
             }
+
         } catch (IOException e) {
-            throw new ManagerSaveException(e);
+            e.printStackTrace();
         }
     }
 
