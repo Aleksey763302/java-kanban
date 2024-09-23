@@ -1,13 +1,11 @@
 package com.yandex.taskTracker.service.TaskManager;
 
-import com.yandex.taskTracker.exceptions.ManagerSaveException;
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
 import com.yandex.taskTracker.model.TaskStatus;
 import com.yandex.taskTracker.service.HistoryManager.HistoryManager;
 import com.yandex.taskTracker.service.Managers;
-
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -34,7 +32,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addTask(Task task) throws ManagerSaveException {
+    public void addTask(Task task) {
         task.setId(giveID());
         tasks.put(task.getId(), task);
     }
@@ -69,7 +67,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addEpic(Epic epic) throws ManagerSaveException {
+    public void addEpic(Epic epic) {
         epic.setId(giveID());
         epics.put(epic.getId(), epic);
     }
@@ -99,7 +97,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addSubTask(SubTask subTask) throws ManagerSaveException {
+    public void addSubTask(SubTask subTask) {
         subTask.setId(giveID());
         subTasks.put(subTask.getId(), subTask);
         epics.get(subTask.getEpicId()).addSubtaskId(subTask.getId());
