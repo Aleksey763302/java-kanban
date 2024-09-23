@@ -7,9 +7,12 @@ import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
-        File savefile = new File("save.txt");
+        File savefile = new File("resources\\save.txt");
         TaskManager tm = Managers.loadFromFile(savefile);
         System.out.println("Поехали!");
+        System.out.println(tm.searchEpic(3));
+        System.out.println(tm.searchEpic(4));
+        System.out.println(tm.searchEpic(3));
         printAllTasks(tm);
     }
 
