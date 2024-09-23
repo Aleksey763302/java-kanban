@@ -12,14 +12,14 @@ import java.io.File;
 public class Managers {
 
     public static TaskManager getDefault() {
-        return (TaskManager) new InMemoryTaskManager();
+        return new InMemoryTaskManager();
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
+    public static FileBackedTaskManager loadFromFile(File file) {
         return new FileBackedTaskManager(file);
     }
 
     public static HistoryManager getDefaultHistory() {
-        return (HistoryManager) new InMemoryHistoryManager();
+        return new InMemoryHistoryManager();
     }
 }
