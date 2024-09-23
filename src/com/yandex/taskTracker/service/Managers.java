@@ -1,6 +1,5 @@
 package com.yandex.taskTracker.service;
 
-import com.yandex.taskTracker.exceptions.ManagerSaveException;
 import com.yandex.taskTracker.service.HistoryManager.HistoryManager;
 import com.yandex.taskTracker.service.HistoryManager.InMemoryHistoryManager;
 import com.yandex.taskTracker.service.TaskManager.FileBackedTaskManager;
