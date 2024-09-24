@@ -27,7 +27,7 @@ class InMemoryHistoryManagerTest {
         history.add(task);
         historyManager.add(task);
         List<Task> saveHistory = historyManager.getHistory();
-        assertEquals(history, saveHistory, "списки историй разные");
+        assertEquals(history, saveHistory, "списки историй отличаются");
     }
 
     @Test
@@ -58,6 +58,6 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task3);
         historyManager.remove(task2.getId());
         List<Task> getTask = historyManager.getHistory();
-        assertEquals(2, getTask.size(), "задача не удалилась");
+        assertEquals(2, getTask.size(), "размер списка не совпадает");
     }
 }

@@ -1,5 +1,6 @@
 package test.testService;
 
+import com.yandex.taskTracker.exceptions.ManagerSaveException;
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
@@ -47,7 +48,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void updateTask() {
+    void updateTask() throws ManagerSaveException {
         Task task = new Task("Test updateTask", "Test updateTask description");
         taskManager.addTask(task);
         final int taskId = task.getId();
@@ -153,8 +154,8 @@ class InMemoryTaskManagerTest {
     @Test
     void removeSubtask() {
         Epic epic = new Epic("Test removeSubtask", " description");
-        SubTask subtask = new SubTask("Test removeSubtask", " description", epic.getId());
         taskManager.addEpic(epic);
+        SubTask subtask = new SubTask("Test removeSubtask", " description", epic.getId());
         taskManager.addSubTask(subtask);
         final int subtaskId = subtask.getId();
         taskManager.removeSubTask(subtaskId);

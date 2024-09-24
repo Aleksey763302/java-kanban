@@ -3,26 +3,27 @@ package com.yandex.taskTracker.model;
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    private final ArrayList<Integer> subTasksId = new ArrayList<>();
+    private final ArrayList<Integer> subtasksId;
 
     public Epic(String name, String description) {
         super(name, description);
+        this.subtasksId = new ArrayList<>();
     }
 
     public ArrayList<Integer> getSubTasksList() {
-        return subTasksId;
+        return subtasksId;
     }
 
     public void addSubtaskId(Integer id) {
-        subTasksId.add(id);
+        subtasksId.add(id);
     }
 
     public void removeSubTaskId(Integer id) {
-        subTasksId.remove(id);
+        subtasksId.remove(id);
     }
 
     public void clearSubTaskId() {
-        subTasksId.clear();
+        subtasksId.clear();
     }
 
     @Override
@@ -32,7 +33,6 @@ public class Epic extends Task {
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
                 ", id=" + getId() +
-                ", subTasksList.size()=" + subTasksId.size() +
                 '}';
     }
 }

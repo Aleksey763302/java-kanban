@@ -7,15 +7,14 @@ import com.yandex.taskTracker.model.TaskStatus;
 import com.yandex.taskTracker.service.HistoryManager.HistoryManager;
 import com.yandex.taskTracker.service.Managers;
 
-
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
+    protected final HashMap<Integer, Task> tasks = new HashMap<>();
+    protected final HashMap<Integer, Epic> epics = new HashMap<>();
+    protected final HashMap<Integer, SubTask> subTasks = new HashMap<>();
 
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
@@ -24,8 +23,17 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+    public int giveID() {
+        int id = tasks.size() + epics.size() + subTasks.size();
+        if (tasks.containsKey(id) || epics.containsKey(id) || subTasks.containsKey(id)) {
+            id *= 2;
+        }
+        return id;
+    }
+
     @Override
     public void addTask(Task task) {
+        task.setId(giveID());
         tasks.put(task.getId(), task);
     }
 
@@ -33,7 +41,6 @@ public class InMemoryTaskManager implements TaskManager {
     public Task searchTask(int id) {
         historyManager.add(tasks.get(id));
         return tasks.get(id);
-
     }
 
     @Override
@@ -61,6 +68,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addEpic(Epic epic) {
+        epic.setId(giveID());
         epics.put(epic.getId(), epic);
     }
 
@@ -90,6 +98,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addSubTask(SubTask subTask) {
+        subTask.setId(giveID());
         subTasks.put(subTask.getId(), subTask);
         epics.get(subTask.getEpicId()).addSubtaskId(subTask.getId());
         checkStatus(subTask.getEpicId());
