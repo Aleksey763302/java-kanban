@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -85,46 +87,66 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private String toString(Task task) {
         StringBuilder sb = new StringBuilder();
-        String[] taskType = task.toString().split("\\{");
-        sb.append(taskType[0].toUpperCase());
+        String[] split = task.toString().split("\\{");
+        TasksType type = TasksType.valueOf(split[0].toUpperCase());
+        sb.append(type);
         sb.append(",");
-        String[] taskFields = taskType[1].split(",");
-        for (String field : taskFields) {
-            int index = field.indexOf("=") + 1;
-            sb.append(field.substring(index));
+        sb.append(task.getName());
+        sb.append(",");
+        sb.append(task.getDescription());
+        sb.append(",");
+        sb.append(task.getStatus());
+        sb.append(",");
+        sb.append(task.getId());
+        sb.append(",");
+        if (type == TasksType.SUBTASK) {
+            SubTask subtask = (SubTask) task;
+            sb.append(subtask.getEpicId());
             sb.append(",");
-            if (sb.indexOf("'") != -1) {
-                sb.deleteCharAt(sb.indexOf("'"));
-            }
         }
-        sb.delete(sb.length() - 1, sb.length());
-        return new String(sb);
+        sb.append(task.getDuration());
+        sb.append(",");
+        sb.append(task.getEndTime().minus(task.getDuration()));
+        sb.append("}");
+        return sb.toString();
     }
 
     private Task fromString(String value) {
         Task task;
         String[] taskFields = value.split(",");
         TasksType taskType;
+        Duration duration;
+        LocalDateTime dateTime;
         if (!(taskFields.length < 3)) {
             taskType = TasksType.valueOf(taskFields[0]);
+            if (taskType == TasksType.SUBTASK) {
+                duration = Duration.parse(taskFields[6]);
+                dateTime = LocalDateTime.parse(taskFields[7]);
+            } else {
+                duration = Duration.parse(taskFields[5]);
+                dateTime = LocalDateTime.parse(taskFields[6]);
+            }
         } else {
             taskType = null;
+            duration = null;
+            dateTime = null;
         }
         if (taskType == TasksType.TASK) {
-            task = new Task(taskFields[1], taskFields[2]);
+            task = new Task(taskFields[1], taskFields[2], dateTime, duration);
             task.setStatus(TaskStatus.valueOf(taskFields[3]));
             task.setId(Integer.parseInt(taskFields[4]));
         } else if (taskType == TasksType.EPIC) {
-            task = new Epic(taskFields[1], taskFields[2]);
+            task = new Epic(taskFields[1], taskFields[2], dateTime, duration);
             task.setStatus(TaskStatus.valueOf(taskFields[3]));
             task.setId(Integer.parseInt(taskFields[4]));
         } else if (taskType == TasksType.SUBTASK) {
-            task = new SubTask(taskFields[1], taskFields[2], Integer.parseInt(taskFields[5]));
+            task = new SubTask(taskFields[1], taskFields[2], Integer.parseInt(taskFields[5]), dateTime, duration);
             task.setId(Integer.parseInt(taskFields[4]));
             task.setStatus(TaskStatus.valueOf(taskFields[3]));
         } else {
             task = null;
         }
+
         return task;
     }
 }
