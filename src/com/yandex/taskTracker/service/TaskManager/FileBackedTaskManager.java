@@ -38,6 +38,54 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
+    @Override
+    public void removeTask(int id) {
+        super.removeTask(id);
+        save();
+    }
+
+    @Override
+    public void removeEpic(int id) {
+        super.removeEpic(id);
+        save();
+    }
+
+    @Override
+    public void removeSubTask(int id) {
+        super.removeSubTask(id);
+        save();
+    }
+
+    @Override
+    public void updateTask(Task task) {
+        super.updateTask(task);
+        save();
+    }
+
+    @Override
+    public void updateSabTask(SubTask subTask) {
+        super.updateSabTask(subTask);
+        save();
+    }
+
+    @Override
+    public void clearTasks() {
+        super.clearTasks();
+        save();
+    }
+
+    @Override
+    public void clearAllSubtasks() {
+        super.clearAllSubtasks();
+        save();
+    }
+
+    @Override
+    public void clearAllEpics() {
+        super.clearAllEpics();
+        save();
+    }
+
     private void loadTasks() {
         String[] loadTasks;
         try {
@@ -58,6 +106,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             } else if (TasksType.valueOf(type) == TasksType.SUBTASK) {
                 subTasks.put(task.getId(), (SubTask) task);
                 epics.get(((SubTask) task).getEpicId()).addSubtaskId(task.getId());
+                addDataTimeAndDuration(task.getId());
             }
         }
     }
@@ -136,7 +185,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             task.setStatus(TaskStatus.valueOf(taskFields[3]));
             task.setId(Integer.parseInt(taskFields[4]));
         } else if (taskType == TasksType.EPIC) {
-            task = new Epic(taskFields[1], taskFields[2], dateTime, duration);
+            task = new Epic(taskFields[1], taskFields[2]);
             task.setStatus(TaskStatus.valueOf(taskFields[3]));
             task.setId(Integer.parseInt(taskFields[4]));
         } else if (taskType == TasksType.SUBTASK) {
@@ -146,7 +195,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } else {
             task = null;
         }
-
         return task;
     }
 }
