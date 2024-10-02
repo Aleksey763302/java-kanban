@@ -7,6 +7,7 @@ import com.yandex.taskTracker.model.TaskStatus;
 import com.yandex.taskTracker.service.HistoryManager.HistoryManager;
 import com.yandex.taskTracker.service.Managers;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,8 +101,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void addSubTask(SubTask subTask) {
         subTask.setId(giveID());
         subTasks.put(subTask.getId(), subTask);
-        epics.get(subTask.getEpicId()).addSubtaskId(subTask.getId());
-        checkStatus(subTask.getEpicId());
+        int epicId = subTask.getEpicId();
+        epics.get(epicId).addSubtaskId(subTask.getId());
+        checkStatus(epicId);
+        addDataTimeAndDuration(subTask.getId());
     }
 
     @Override
@@ -148,6 +151,26 @@ public class InMemoryTaskManager implements TaskManager {
         int subtaskId = subTask.getId();
         subTasks.put(subtaskId, subTask);
         checkStatus(epicId);
+    }
+
+    protected void addDataTimeAndDuration(int id) {
+        SubTask subTask = subTasks.get(id);
+        int epicId = subTask.getEpicId();
+        List<Integer> subtasksEpic = epics.get(epicId).getSubTasksList();
+        if (subtasksEpic.size() == 1) {
+            epics.get(epicId).setDuration(subTask.getDuration());
+            epics.get(epicId).setEndTime(subTask.getEndTime());
+            epics.get(epicId).setStartTime(subTask.getEndTime().minus(subTask.getDuration()));
+        } else {
+            if (epics.get(epicId).getStartTime().isAfter(subTask.getEndTime().minus(subTask.getDuration()))) {
+                epics.get(epicId).setStartTime(subTask.getEndTime().minus(subTask.getDuration()));
+            }
+            if (epics.get(epicId).getEndTime().isBefore(subTask.getEndTime())) {
+                epics.get(epicId).setEndTime(subTask.getEndTime());
+            }
+            Duration durationEpic = epics.get(epicId).getDuration();
+            epics.get(epicId).setDuration(durationEpic.plus(subTask.getDuration()));
+        }
     }
 
     private void clearEpicSubTasks(int id) {
