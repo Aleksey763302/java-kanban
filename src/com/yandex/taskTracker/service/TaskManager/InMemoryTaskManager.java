@@ -8,9 +8,11 @@ import com.yandex.taskTracker.service.HistoryManager.HistoryManager;
 import com.yandex.taskTracker.service.Managers;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
@@ -18,6 +20,21 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, SubTask> subTasks = new HashMap<>();
 
     private final HistoryManager historyManager = Managers.getDefaultHistory();
+
+    @Override
+    public TreeSet<Task> getPrioritizedTasks() {
+        TreeSet<Task> tasks = new TreeSet<>((Task task1, Task task2) -> {
+            if (task1.getEndTime().minus(task1.getDuration()).isBefore(task2.getEndTime().minus(task2.getDuration()))) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+        tasks.addAll(getAllTasks());
+        tasks.addAll(getAllEpics());
+        tasks.addAll(getAllSubTasks());
+        return tasks;
+    }
 
     @Override
     public List<Task> getHistory() {
@@ -35,7 +52,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addTask(Task task) {
         task.setId(giveID());
-        tasks.put(task.getId(), task);
+        if (checkTime(task)) {
+            tasks.put(task.getId(), task);
+        }
     }
 
     @Override
@@ -206,5 +225,23 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epics.get(id).setStatus(NEW);
         }
+    }
+
+    private boolean checkTime(Task task) {
+        List<Task> taskList = new ArrayList<>(getPrioritizedTasks());
+        List<Boolean> check = new ArrayList<>();
+        if (taskList.isEmpty()) {
+            return true;
+        }
+        taskList.forEach(task1 -> {
+            LocalDateTime startTime = task1.getEndTime().minus(task1.getDuration());
+            LocalDateTime endTime = task1.getEndTime();
+            if (startTime.isBefore(task.getEndTime().minus(task.getDuration()))
+                    && endTime.isAfter(task.getEndTime().minus(task.getDuration()))) {
+                check.add(false);
+                System.out.println(task.getName() + " пересечение с " + task1.getName());
+            }
+        });
+        return check.isEmpty();
     }
 }
