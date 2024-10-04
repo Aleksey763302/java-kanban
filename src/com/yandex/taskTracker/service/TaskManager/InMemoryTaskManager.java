@@ -9,10 +9,8 @@ import com.yandex.taskTracker.service.Managers;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
@@ -89,7 +87,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addEpic(Epic epic) {
         epic.setId(giveID());
-        epics.put(epic.getId(), epic);
+        if (checkTime(epic)) {
+            epics.put(epic.getId(), epic);
+        }
     }
 
     @Override
@@ -119,30 +119,33 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addSubTask(SubTask subTask) {
         subTask.setId(giveID());
-        subTasks.put(subTask.getId(), subTask);
-        int epicId = subTask.getEpicId();
-        epics.get(epicId).addSubtaskId(subTask.getId());
-        checkStatus(epicId);
-        addDataTimeAndDuration(subTask.getId());
+        if (checkTime(subTask)) {
+            subTasks.put(subTask.getId(), subTask);
+            int epicId = subTask.getEpicId();
+            epics.get(epicId).addSubtaskId(subTask.getId());
+            checkStatus(epicId);
+            addDataTimeAndDuration(subTask.getId());
+        }
     }
 
     @Override
     public void clearAllSubtasks() {
         subTasks.clear();
-        for (Epic epic : epics.values()) {
+        epics.values().forEach(epic -> {
             epic.clearSubTaskId();
             checkStatus(epic.getId());
-        }
+            epic.setDuration(Duration.ZERO);
+            epic.setStartTime(LocalDateTime.MIN);
+            epic.setEndTime(LocalDateTime.MIN);
+        });
     }
 
     @Override
     public List<SubTask> getAllSubTasksEpic(int id) {
         ArrayList<Integer> subtasksId = new ArrayList<>(epics.get(id).getSubTasksList());
-        ArrayList<SubTask> subTasksList = new ArrayList<>();
-        for (Integer subTaskId : subtasksId) {
-            subTasksList.add(subTasks.get(subTaskId));
-        }
-        return subTasksList;
+        return subtasksId.stream()
+                .map(subTasks::get)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -194,9 +197,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void clearEpicSubTasks(int id) {
         ArrayList<Integer> idSubTasks = new ArrayList<>(epics.get(id).getSubTasksList());
-        for (Integer subTaskId : idSubTasks) {
-            subTasks.remove(subTaskId);
-        }
+        idSubTasks.forEach(subTasks::remove);
         epics.get(id).clearSubTaskId();
         checkStatus(id);
     }
@@ -239,7 +240,6 @@ public class InMemoryTaskManager implements TaskManager {
             if (startTime.isBefore(task.getEndTime().minus(task.getDuration()))
                     && endTime.isAfter(task.getEndTime().minus(task.getDuration()))) {
                 check.add(false);
-                System.out.println(task.getName() + " пересечение с " + task1.getName());
             }
         });
         return check.isEmpty();
