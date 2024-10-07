@@ -1,8 +1,8 @@
 package test.testService;
 
-import com.yandex.taskTracker.service.HistoryManager.HistoryManager;
+import com.yandex.taskTracker.service.historyManager.HistoryManager;
 import com.yandex.taskTracker.service.Managers;
-import com.yandex.taskTracker.service.TaskManager.TaskManager;
+import com.yandex.taskTracker.service.taskManager.TaskManager;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
