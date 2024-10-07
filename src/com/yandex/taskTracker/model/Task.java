@@ -14,12 +14,12 @@ public class Task {
     LocalDateTime startTime;
 
     public Task(String name, String description,
-                int startYear, int startMonth, int startDayOfMonth, int startHour, int startMinute, int duration) {
+                String time, int duration) {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
         this.id = hashCode();
-        this.startTime = LocalDateTime.of(startYear, startMonth, startDayOfMonth, startHour, startMinute);
+        this.startTime = LocalDateTime.parse(time);
         this.duration = Duration.ofHours(duration);
     }
 
@@ -33,10 +33,13 @@ public class Task {
         this.duration = duration;
     }
 
-    public Task(String name, String description, TaskStatus status, int id) {
+    public Task(String name, String description, TaskStatus status,
+                LocalDateTime dateTime, Duration duration, int id) {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.startTime = dateTime;
+        this.duration = duration;
         this.id = id;
     }
 

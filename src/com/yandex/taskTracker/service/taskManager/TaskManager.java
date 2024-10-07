@@ -1,10 +1,11 @@
-package com.yandex.taskTracker.service.TaskManager;
+package com.yandex.taskTracker.service.taskManager;
 
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeSet;
 
 public interface TaskManager {
@@ -14,7 +15,7 @@ public interface TaskManager {
 
     void addTask(Task task);
 
-    Task searchTask(int id);
+    Optional<Task> searchTask(int id);
 
     List<Task> getAllTasks();
 
@@ -28,7 +29,7 @@ public interface TaskManager {
 
     List<Epic> getAllEpics();
 
-    Epic searchEpic(int id);
+    Optional<Epic> searchEpic(int id);
 
     void removeEpic(int id);
 
@@ -42,7 +43,7 @@ public interface TaskManager {
 
     List<SubTask> getAllSubTasks();
 
-    SubTask searchSubTask(int id);
+    Optional<SubTask> searchSubTask(int id);
 
     void removeSubTask(int id);
 

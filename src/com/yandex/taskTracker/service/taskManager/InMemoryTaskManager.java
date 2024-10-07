@@ -1,16 +1,15 @@
-package com.yandex.taskTracker.service.TaskManager;
+package com.yandex.taskTracker.service.taskManager;
 
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
 import com.yandex.taskTracker.model.TaskStatus;
-import com.yandex.taskTracker.service.HistoryManager.HistoryManager;
+import com.yandex.taskTracker.service.historyManager.HistoryManager;
 import com.yandex.taskTracker.service.Managers;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
@@ -21,17 +20,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public TreeSet<Task> getPrioritizedTasks() {
-        TreeSet<Task> tasks = new TreeSet<>((Task task1, Task task2) -> {
+        TreeSet<Task> tasksSet = new TreeSet<>((Task task1, Task task2) -> {
             if (task1.getEndTime().minus(task1.getDuration()).isBefore(task2.getEndTime().minus(task2.getDuration()))) {
                 return 1;
             } else {
                 return -1;
             }
         });
-        tasks.addAll(getAllTasks());
-        tasks.addAll(getAllEpics());
-        tasks.addAll(getAllSubTasks());
-        return tasks;
+        tasksSet.addAll(getAllTasks());
+        tasksSet.addAll(getAllEpics());
+        tasksSet.addAll(getAllSubTasks());
+        return tasksSet;
     }
 
     @Override
@@ -56,9 +55,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task searchTask(int id) {
-        historyManager.add(tasks.get(id));
-        return tasks.get(id);
+    public Optional<Task> searchTask(int id) {
+        Optional<Task> task = Optional.ofNullable(tasks.get(id));
+        if (task.isPresent()) {
+            historyManager.add(tasks.get(id));
+            return task;
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -98,9 +102,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic searchEpic(int id) {
-        historyManager.add(epics.get(id));
-        return epics.get(id);
+    public Optional<Epic> searchEpic(int id) {
+        Optional<Epic> epic = Optional.ofNullable(epics.get(id));
+        if (epic.isPresent()) {
+            historyManager.add(epics.get(id));
+            return epic;
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -145,7 +154,7 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Integer> subtasksId = new ArrayList<>(epics.get(id).getSubTasksList());
         return subtasksId.stream()
                 .map(subTasks::get)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -154,9 +163,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public SubTask searchSubTask(int id) {
-        historyManager.add(subTasks.get(id));
-        return subTasks.get(id);
+    public Optional<SubTask> searchSubTask(int id) {
+        Optional<SubTask> subtask = Optional.ofNullable(subTasks.get(id));
+        if (subtask.isPresent()) {
+            historyManager.add(subTasks.get(id));
+            return subtask;
+        } else {
+            return Optional.empty();
+        }
+
     }
 
     @Override
@@ -203,28 +218,25 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void checkStatus(int id) {
-        final TaskStatus DONE = TaskStatus.DONE;
-        final TaskStatus IN_PROGRESS = TaskStatus.IN_PROGRESS;
-        final TaskStatus NEW = TaskStatus.NEW;
         int countDone = 0;
         int countNew = 0;
         ArrayList<Integer> subtasksId = new ArrayList<>(epics.get(id).getSubTasksList());
         for (Integer subTaskId : subtasksId) {
-            if (subTasks.get(subTaskId).getStatus() == DONE) {
+            if (subTasks.get(subTaskId).getStatus() == TaskStatus.DONE) {
                 countDone++;
-            } else if (subTasks.get(subTaskId).getStatus() == IN_PROGRESS) {
-                epics.get(id).setStatus(IN_PROGRESS);
+            } else if (subTasks.get(subTaskId).getStatus() == TaskStatus.IN_PROGRESS) {
+                epics.get(id).setStatus(TaskStatus.IN_PROGRESS);
                 return;
-            } else if (subTasks.get(subTaskId).getStatus() == NEW) {
+            } else if (subTasks.get(subTaskId).getStatus() == TaskStatus.NEW) {
                 countNew++;
             }
         }
         if (countDone > 0 && countNew == 0) {
-            epics.get(id).setStatus(DONE);
+            epics.get(id).setStatus(TaskStatus.DONE);
         } else if (countDone != 0 && countNew != 0) {
-            epics.get(id).setStatus(IN_PROGRESS);
+            epics.get(id).setStatus(TaskStatus.IN_PROGRESS);
         } else {
-            epics.get(id).setStatus(NEW);
+            epics.get(id).setStatus(TaskStatus.NEW);
         }
     }
 
@@ -239,6 +251,10 @@ public class InMemoryTaskManager implements TaskManager {
             LocalDateTime endTime = task1.getEndTime();
             if (startTime.isBefore(task.getEndTime().minus(task.getDuration()))
                     && endTime.isAfter(task.getEndTime().minus(task.getDuration()))) {
+                check.add(false);
+            }
+            if (task.getEndTime().isAfter(task1.getEndTime().minus(task1.getDuration()))
+                    && task.getEndTime().isBefore(task1.getEndTime())) {
                 check.add(false);
             }
         });

@@ -1,4 +1,4 @@
-package com.yandex.taskTracker.service.TaskManager;
+package com.yandex.taskTracker.service.taskManager;
 
 import com.yandex.taskTracker.exceptions.ManagerSaveException;
 import com.yandex.taskTracker.model.*;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    public Path saveFile;
+    private final Path saveFile;
 
     public FileBackedTaskManager(File file) {
         saveFile = file.toPath();
@@ -94,10 +94,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 return;
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ManagerSaveException("файл не найден");
         }
         for (String st : loadTasks) {
             Task task = fromString(st);
+            if (task == null) {
+                return;
+            }
             String type = task.toString().substring(0, task.toString().indexOf("{")).toUpperCase();
             if (TasksType.valueOf(type) == TasksType.TASK) {
                 tasks.put(task.getId(), task);
@@ -113,9 +116,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (FileWriter fileWriter = new FileWriter(saveFile.toString())) {
-            if (saveFile == null) {
-                throw new ManagerSaveException("файл для записи отсутствует");
-            }
             List<Task> tasks = getAllTasks();
             List<Epic> epics = getAllEpics();
             List<SubTask> subTasks = getAllSubTasks();
@@ -128,7 +128,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             for (Task task : subTasks) {
                 fileWriter.write(toString(task));
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -166,7 +165,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         TasksType taskType;
         Duration duration;
         LocalDateTime dateTime;
-        if (!(taskFields.length < 3)) {
+        if (taskFields.length != 0) {
             taskType = TasksType.valueOf(taskFields[0]);
             if (taskType == TasksType.SUBTASK) {
                 duration = Duration.parse(taskFields[6]);
