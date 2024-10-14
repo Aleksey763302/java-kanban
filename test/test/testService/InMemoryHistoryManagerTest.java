@@ -1,7 +1,7 @@
 package test.testService;
 
 import com.yandex.taskTracker.model.Task;
-import com.yandex.taskTracker.service.HistoryManager.HistoryManager;
+import com.yandex.taskTracker.service.historyManager.HistoryManager;
 import com.yandex.taskTracker.service.Managers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,8 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void getHistory() {
-        Task task = new Task("Test getHistory", "Test getHistory description");
+        Task task = new Task("Test write in file", "description",
+                "2024-01-01T13:01", 2);
         ArrayList<Task> history = new ArrayList<>();
         history.add(task);
         historyManager.add(task);
@@ -32,9 +33,15 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void addedTaskInEndListIfWasPreviouslyAdded() {
-        Task task1 = new Task("Test addedTaskInEndListIfWasPreviouslyAdded", "task1 description");
-        Task task2 = new Task("Test addedTaskInEndListIfWasPreviouslyAdded", "task2 description");
-        Task task3 = new Task("Test addedTaskInEndListIfWasPreviouslyAdded", "task3 description");
+        Task task1 = new Task("addedTaskInEndListIfWasPreviouslyAdded", "description",
+                "2024-01-01T13:01", 1);
+        Task task2 = new Task("addedTaskInEndListIfWasPreviouslyAdded2", "description",
+                "2024-02-01T13:01", 1);
+        Task task3 = new Task("addedTaskInEndListIfWasPreviouslyAdded3", "description",
+                "2024-03-01T13:01", 1);
+        task1.setId(1);
+        task2.setId(2);
+        task3.setId(3);
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);
@@ -50,13 +57,19 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void removeTaskOfHistory() {
-        Task task1 = new Task("Test removeTask", "task1 description");
-        Task task2 = new Task("Test removeTask", "task2 description");
-        Task task3 = new Task("Test removeTask", "task3 description");
+        Task task1 = new Task("Test removeTaskOfHistory1", "description",
+                "2024-01-02T13:01", 2);
+        Task task2 = new Task("Test removeTaskOfHistory2", "description",
+                "2024-02-03T13:01", 1);
+        Task task3 = new Task("Test removeTaskOfHistory3", "description",
+                "2024-03-04T13:01", 4);
+        task1.setId(1);
+        task2.setId(2);
+        task3.setId(3);
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);
-        historyManager.remove(task2.getId());
+        historyManager.remove(2);
         List<Task> getTask = historyManager.getHistory();
         assertEquals(2, getTask.size(), "размер списка не совпадает");
     }

@@ -11,7 +11,9 @@ class SubTaskTest {
 
     @BeforeEach
     public void beforeEach() {
-        subtask = new SubTask("Name", "Description", 100);
+        subtask = new SubTask("subtask", "description", 100,
+                "2024-01-01T19:13",
+                2);
     }
 
     @Test

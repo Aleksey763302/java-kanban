@@ -12,7 +12,8 @@ class TaskTest {
 
     @BeforeEach
     public void beforeEach() {
-        task = new Task("Name", "Description");
+        task = new Task("Name", "Description",
+                "2024-01-01T12:13", 2);
     }
 
     @Test
