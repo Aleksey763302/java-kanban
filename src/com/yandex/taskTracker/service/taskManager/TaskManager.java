@@ -6,6 +6,7 @@ import com.yandex.taskTracker.model.Task;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeSet;
 
 public interface TaskManager {
@@ -48,4 +49,6 @@ public interface TaskManager {
     void removeSubTask(int id);
 
     void updateSabTask(SubTask subTask);
+    boolean checkTime(Task task);
+    Set<Integer> getSetId();
 }

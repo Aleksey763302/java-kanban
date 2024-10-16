@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final Path saveFile;
@@ -89,18 +90,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private void loadTasks() {
         String[] loadTasks;
         try {
-            loadTasks = Files.readString(saveFile).split("}");
-            if (!(loadTasks[loadTasks.length - 1].contains(","))) {
+            loadTasks = Files.readString(saveFile).split("\n");
+            if (loadTasks.length == 1) {
                 return;
             }
         } catch (IOException e) {
             throw new ManagerSaveException("файл не найден");
         }
-        for (String st : loadTasks) {
-            Task task = fromString(st);
-            if (task == null) {
+        for (int i = 1; i < loadTasks.length; i++) {
+            Optional<Task> taskOptional = fromString(loadTasks[i]);
+            if (taskOptional.isEmpty()) {
                 return;
             }
+            Task task = taskOptional.get();
             String type = task.toString().substring(0, task.toString().indexOf("{")).toUpperCase();
             if (TasksType.valueOf(type) == TasksType.TASK) {
                 tasks.put(task.getId(), task);
@@ -116,6 +118,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (FileWriter fileWriter = new FileWriter(saveFile.toString())) {
+            fileWriter.write("Type,Name,Description,Status,ID,EpicID,Duration,StartTime\n");
             List<Task> tasks = getAllTasks();
             List<Epic> epics = getAllEpics();
             List<SubTask> subTasks = getAllSubTasks();
@@ -137,63 +140,58 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         StringBuilder sb = new StringBuilder();
         String[] split = task.toString().split("\\{");
         TasksType type = TasksType.valueOf(split[0].toUpperCase());
-        sb.append(type);
-        sb.append(",");
-        sb.append(task.getName());
-        sb.append(",");
-        sb.append(task.getDescription());
-        sb.append(",");
-        sb.append(task.getStatus());
-        sb.append(",");
-        sb.append(task.getId());
-        sb.append(",");
+        sb.append(type).append(",");
+        sb.append(task.getName()).append(",");
+        sb.append(task.getDescription()).append(",");
+        sb.append(task.getStatus()).append(",");
+        sb.append(task.getId()).append(",");
         if (type == TasksType.SUBTASK) {
             SubTask subtask = (SubTask) task;
-            sb.append(subtask.getEpicId());
+            sb.append(subtask.getEpicId()).append(",");
+        } else {
             sb.append(",");
         }
-        sb.append(task.getDuration());
-        sb.append(",");
+        sb.append(task.getDuration()).append(",");
         sb.append(task.getEndTime().minus(task.getDuration()));
-        sb.append("}");
+        sb.append("\n");
         return sb.toString();
     }
 
-    private Task fromString(String value) {
-        Task task;
+    private Optional<TasksType> getType(String stringStatus) {
+        try {
+            return Optional.of(TasksType.valueOf(stringStatus));
+        } catch (IllegalArgumentException exception) {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<Task> fromString(String value) {
         String[] taskFields = value.split(",");
-        TasksType taskType;
+        Optional<TasksType> typeOptional = getType(taskFields[0]);
+        if (typeOptional.isEmpty()) {
+            return Optional.empty();
+        }
+        TasksType taskType = typeOptional.get();
         Duration duration;
         LocalDateTime dateTime;
-        if (taskFields.length != 0) {
-            taskType = TasksType.valueOf(taskFields[0]);
-            if (taskType == TasksType.SUBTASK) {
-                duration = Duration.parse(taskFields[6]);
-                dateTime = LocalDateTime.parse(taskFields[7]);
-            } else {
-                duration = Duration.parse(taskFields[5]);
-                dateTime = LocalDateTime.parse(taskFields[6]);
-            }
-        } else {
-            taskType = null;
-            duration = null;
-            dateTime = null;
-        }
+        duration = Duration.parse(taskFields[6]);
+        dateTime = LocalDateTime.parse(taskFields[7]);
         if (taskType == TasksType.TASK) {
-            task = new Task(taskFields[1], taskFields[2], dateTime, duration);
+            Task task = new Task(taskFields[1], taskFields[2], dateTime, duration);
             task.setStatus(TaskStatus.valueOf(taskFields[3]));
             task.setId(Integer.parseInt(taskFields[4]));
+            return Optional.of(task);
         } else if (taskType == TasksType.EPIC) {
-            task = new Epic(taskFields[1], taskFields[2]);
+            Task task = new Epic(taskFields[1], taskFields[2]);
             task.setStatus(TaskStatus.valueOf(taskFields[3]));
             task.setId(Integer.parseInt(taskFields[4]));
+            return Optional.of(task);
         } else if (taskType == TasksType.SUBTASK) {
-            task = new SubTask(taskFields[1], taskFields[2], Integer.parseInt(taskFields[5]), dateTime, duration);
+            Task task = new SubTask(taskFields[1], taskFields[2], Integer.parseInt(taskFields[5]), dateTime, duration);
             task.setId(Integer.parseInt(taskFields[4]));
             task.setStatus(TaskStatus.valueOf(taskFields[3]));
-        } else {
-            task = null;
+            return Optional.of(task);
         }
-        return task;
+        return Optional.empty();
     }
 }

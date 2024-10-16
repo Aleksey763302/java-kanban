@@ -1,0 +1,13 @@
+Type,Name,Description,Status,ID,EpicID,Duration,StartTime
+TASK,task 1,destruction,NEW,0,,PT2H,2024-01-01T12:13
+TASK,task update,jnjloknojklbn,DONE,1,,PT2H,2024-01-01T12:13
+TASK,task3,description,NEW,2,,PT2H,2024-01-01T22:13
+TASK,task5,description,NEW,3,,PT2H,2024-01-01T15:13
+TASK,task6,description,NEW,4,,PT2H,2024-01-01T17:13
+TASK,task8,description,NEW,5,,PT2H,2024-01-01T08:13
+EPIC,epic,descr,NEW,6,,PT5H,2024-02-01T12:13
+EPIC,epic2,descr,IN_PROGRESS,9,,PT5H,2024-03-01T15:13
+SUBTASK,subtask,description,NEW,7,6,PT2H,2024-01-01T19:13
+SUBTASK,subtask2,description2,NEW,8,6,PT3H,2024-02-01T14:13
+SUBTASK,subtaskE2,description,NEW,10,9,PT2H,2024-03-01T18:13
+SUBTASK,subtaskE3,description2,DONE,11,9,PT3H,2024-03-01T13:13

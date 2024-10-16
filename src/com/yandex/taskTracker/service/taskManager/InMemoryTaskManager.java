@@ -190,6 +190,36 @@ public class InMemoryTaskManager implements TaskManager {
         checkStatus(epicId);
     }
 
+    @Override
+    public Set<Integer> getSetId() {
+        Set<Integer> id = new HashSet<>();
+        id.addAll(tasks.keySet());
+        id.addAll(epics.keySet());
+        id.addAll(subTasks.keySet());
+        return id;
+    }
+
+    public boolean checkTime(Task task) {
+        List<Task> taskList = new ArrayList<>(getPrioritizedTasks());
+        List<Boolean> check = new ArrayList<>();
+        if (taskList.isEmpty()) {
+            return true;
+        }
+        taskList.forEach(task1 -> {
+            LocalDateTime startTime = task1.getEndTime().minus(task1.getDuration());
+            LocalDateTime endTime = task1.getEndTime();
+            if (startTime.isBefore(task.getEndTime().minus(task.getDuration()))
+                    && endTime.isAfter(task.getEndTime().minus(task.getDuration()))) {
+                check.add(false);
+            }
+            if (task.getEndTime().isAfter(task1.getEndTime().minus(task1.getDuration()))
+                    && task.getEndTime().isBefore(task1.getEndTime())) {
+                check.add(false);
+            }
+        });
+        return check.isEmpty();
+    }
+
     protected void addDataTimeAndDuration(int id) {
         SubTask subTask = subTasks.get(id);
         int epicId = subTask.getEpicId();
@@ -240,24 +270,5 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private boolean checkTime(Task task) {
-        List<Task> taskList = new ArrayList<>(getPrioritizedTasks());
-        List<Boolean> check = new ArrayList<>();
-        if (taskList.isEmpty()) {
-            return true;
-        }
-        taskList.forEach(task1 -> {
-            LocalDateTime startTime = task1.getEndTime().minus(task1.getDuration());
-            LocalDateTime endTime = task1.getEndTime();
-            if (startTime.isBefore(task.getEndTime().minus(task.getDuration()))
-                    && endTime.isAfter(task.getEndTime().minus(task.getDuration()))) {
-                check.add(false);
-            }
-            if (task.getEndTime().isAfter(task1.getEndTime().minus(task1.getDuration()))
-                    && task.getEndTime().isBefore(task1.getEndTime())) {
-                check.add(false);
-            }
-        });
-        return check.isEmpty();
-    }
+
 }
