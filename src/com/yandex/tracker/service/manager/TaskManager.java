@@ -49,7 +49,10 @@ public interface TaskManager {
     void removeSubTask(int id);
 
     void updateSabTask(SubTask subTask);
+
     boolean checkTime(Task task);
+
     Set<Integer> getSetId();
+
     int giveID();
 }

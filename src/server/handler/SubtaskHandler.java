@@ -3,6 +3,8 @@ package server.handler;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.yandex.tracker.model.SubTask;
+import com.yandex.tracker.model.TaskStatus;
+import server.HttpTaskServer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,13 +18,13 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         Endpoint endpoint = getEndpoint(httpExchange.getRequestURI().getPath(), httpExchange.getRequestMethod());
         switch (endpoint) {
             case GET_SUBTASKS -> {
-                String response = gson.toJson(taskManager.getAllSubTasks());
+                String response = gson.toJson(HttpTaskServer.getTaskManager().getAllSubTasks());
                 sendText(httpExchange, response, 200);
             }
             case POST_SUBTASKS -> postSubtask(httpExchange);
             case GET_SUBTASK_BY_ID -> {
                 int id = getTaskIdFromURI(httpExchange);
-                Optional<SubTask> subTaskOptional = taskManager.searchSubTask(id);
+                Optional<SubTask> subTaskOptional = HttpTaskServer.getTaskManager().searchSubTask(id);
                 if (subTaskOptional.isPresent()) {
                     String response = gson.toJson(subTaskOptional.get());
                     sendText(httpExchange, response, 200);
@@ -32,8 +34,8 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
             }
             case DELETE_SUBTASK -> {
                 int id = getTaskIdFromURI(httpExchange);
-                if (taskManager.getSetId().contains(id)) {
-                    taskManager.removeSubTask(id);
+                if (HttpTaskServer.getTaskManager().getSetId().contains(id)) {
+                    HttpTaskServer.getTaskManager().removeSubTask(id);
                     sendText(httpExchange, "подзадача удалена", 200);
                 }
             }
@@ -49,11 +51,11 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         SubTask subTask = parseSubtask(body);
         if (!subTask.getName().contains("notFoundId")) {
             if (body.length == 9) {
-                taskManager.updateSabTask(subTask);
+                HttpTaskServer.getTaskManager().updateSabTask(subTask);
                 sendText(httpExchange, gson.toJson(subTask), 201);
             } else {
-                if (taskManager.checkTime(subTask)) {
-                    taskManager.addSubTask(subTask);
+                if (HttpTaskServer.getTaskManager().checkTime(subTask)) {
+                    HttpTaskServer.getTaskManager().addSubTask(subTask);
                     sendText(httpExchange, gson.toJson(subTask), 201);
                 } else {
                     sendHasInteractions(httpExchange);
@@ -69,20 +71,31 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
     private SubTask parseSubtask(String[] body) {
         StringBuilder stringBuilder = new StringBuilder();
         Integer epicID = null;
+        boolean idCheck = false;
         for (String s : body) {
             stringBuilder.append(s);
-            if (s.startsWith(" \"epicId") || s.startsWith("\"epicId")) {
+            if (s.contains("\"epicId\"")) {
                 int index = s.lastIndexOf(":");
-                epicID = Integer.parseInt(s.substring(index + 1).replace(" ", ""));
+                epicID = Integer.parseInt(s.substring(index + 1)
+                        .replace(" ", "").replace(",", ""));
+            }
+            if (s.contains("\"id\"")) {
+                idCheck = true;
             }
         }
-        if (epicID == null || !taskManager.getSetId().contains(epicID)) {
+        if (epicID == null || !HttpTaskServer.getTaskManager().getSetId().contains(epicID)) {
             int notFoundId = 809784;
             if (epicID != null) {
                 notFoundId = epicID;
             }
             return new SubTask("notFoundId", "", notFoundId, LocalDateTime.now(), Duration.ofHours(0));
         }
-        return gson.fromJson(new String(stringBuilder), SubTask.class);
+        if (idCheck) {
+            return gson.fromJson(new String(stringBuilder), SubTask.class);
+        }
+        SubTask subTask = gson.fromJson(new String(stringBuilder), SubTask.class);
+        subTask.setId(-1);
+        subTask.setStatus(TaskStatus.NEW);
+        return subTask;
     }
 }

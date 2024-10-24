@@ -3,12 +3,9 @@ package server.handler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import com.yandex.tracker.service.Managers;
-import com.yandex.tracker.service.manager.TaskManager;
 import server.handler.adapters.DurationAdapter;
 import server.handler.adapters.LocalDataAdapter;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -16,7 +13,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class BaseHttpHandler {
-    TaskManager taskManager;
     protected Gson gson;
     static final String GET = "GET";
     static final String POST = "POST";
@@ -26,7 +22,6 @@ public class BaseHttpHandler {
     static final String SUBTASKS = "subtasks";
 
     public BaseHttpHandler() {
-        this.taskManager = Managers.loadFromFile(new File("resources\\saveFile.CSV"));
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDataAdapter())
                 .registerTypeAdapter(Duration.class, new DurationAdapter())

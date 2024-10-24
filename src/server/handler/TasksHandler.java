@@ -4,13 +4,13 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.yandex.tracker.model.Task;
 import com.yandex.tracker.model.TaskStatus;
+import server.HttpTaskServer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
 public class TasksHandler extends BaseHttpHandler implements HttpHandler {
-
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -21,12 +21,12 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
         }
         switch (endpoint) {
             case GET_TASKS -> {
-                String response = gson.toJson(taskManager.getAllTasks());
+                String response = gson.toJson(HttpTaskServer.getTaskManager().getAllTasks());
                 sendText(httpExchange, response, 200);
             }
             case GET_TASK_BY_ID -> {
                 int id = getTaskIdFromURI(httpExchange);
-                Optional<Task> taskOpt = taskManager.searchTask(id);
+                Optional<Task> taskOpt = HttpTaskServer.getTaskManager().searchTask(id);
                 if (taskOpt.isPresent()) {
                     String response = gson.toJson(taskOpt.get());
                     sendText(httpExchange, response, 200);
@@ -36,22 +36,22 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
             }
             case POST_TASKS -> {
                 Task task = parseTask(body);
-                if (body.length == 4) {
-                    if (taskManager.checkTime(task)) {
-                        taskManager.addTask(task);
+                if (body.length == 6) {
+                    if (HttpTaskServer.getTaskManager().checkTime(task)) {
+                        HttpTaskServer.getTaskManager().addTask(task);
                         sendText(httpExchange, gson.toJson(task), 201);
                     } else {
                         sendHasInteractions(httpExchange);
                     }
-                } else if (body.length == 6) {
-                    taskManager.updateTask(task);
+                } else if (body.length == 8) {
+                    HttpTaskServer.getTaskManager().updateTask(task);
                     sendText(httpExchange, gson.toJson(task), 201);
                 }
             }
             case DELETE_TASK -> {
                 int id = getTaskIdFromURI(httpExchange);
-                if (taskManager.getSetId().contains(id)) {
-                    taskManager.removeTask(id);
+                if (HttpTaskServer.getTaskManager().getSetId().contains(id)) {
+                    HttpTaskServer.getTaskManager().removeTask(id);
                     sendText(httpExchange, "Задача удалена", 200);
                 } else {
                     sendNotFound(httpExchange, "Задача с ID: " + id + " не найдена");
@@ -66,7 +66,7 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
         boolean checkID = false;
         for (int i = 1; i < body.length; i++) {
             stringBuilder.append(body[i]);
-            if (body[i].startsWith("\"id")) {
+            if (body[i].contains("\"id\"")) {
                 checkID = true;
             }
         }
@@ -78,5 +78,4 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
         task.setStatus(TaskStatus.NEW);
         return task;
     }
-
 }

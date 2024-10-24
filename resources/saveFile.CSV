@@ -4,11 +4,11 @@ TASK,task3,description,NEW,2,,PT2H,2024-01-01T22:13
 TASK,task5,description,NEW,3,,PT2H,2024-01-01T15:13
 TASK,task6,description,NEW,4,,PT2H,2024-01-01T17:13
 TASK,taasfs,deffs,DONE,5,,PT2H,2025-01-01T12:13
-EPIC,new Epic,deskription,DONE,8,,PT8H,2027-04-01T17:13
+EPIC,new Epic,deskription,IN_PROGRESS,8,,PT10H,2034-01-01T11:13
 EPIC,epic2,descr,IN_PROGRESS,9,,PT5H,2024-03-01T15:13
 SUBTASK,new update subtask for epic,deskription,DONE,18,8,PT2H,2027-02-01T19:13
 SUBTASK,я понял зачем закрывать exchage,deskription,DONE,20,8,PT2H,2027-02-01T23:13
-SUBTASK,я понял зачем закрывать exchage,deskription,DONE,22,8,PT2H,2027-03-01T23:13
 SUBTASK,subtaskE2,description,NEW,10,9,PT2H,2024-03-01T18:13
 SUBTASK,subtaskE3,description2,DONE,11,9,PT3H,2024-03-01T13:13
 SUBTASK,нет не понял,deskription,DONE,12,8,PT2H,2027-04-01T23:13
+SUBTASK,new name,deskription,NEW,13,8,PT2H,2034-01-01T19:13

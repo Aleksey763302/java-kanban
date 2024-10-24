@@ -9,7 +9,7 @@ public class Task {
     private String name;
     private String description;
     private TaskStatus status;
-    private int id;
+    private Integer id;
     Duration duration;
     LocalDateTime startTime;
 
@@ -17,8 +17,8 @@ public class Task {
                 String time, int duration) {
         this.name = name;
         this.description = description;
-        this.status = TaskStatus.NEW;
-        this.id = hashCode();
+        this.status = null;
+        this.id = null;
         this.startTime = LocalDateTime.parse(time);
         this.duration = Duration.ofHours(duration);
     }
@@ -98,7 +98,6 @@ public class Task {
     public int hashCode() {
         return Objects.hash(name, description, status, id);
     }
-
 
     @Override
     public String toString() {

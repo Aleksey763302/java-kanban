@@ -1,54 +1,15 @@
 package com.yandex.tracker;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.yandex.tracker.model.Epic;
 import com.yandex.tracker.model.SubTask;
 import com.yandex.tracker.model.Task;
 import com.yandex.tracker.model.TaskStatus;
-import com.yandex.tracker.service.Managers;
 import com.yandex.tracker.service.manager.TaskManager;
-import server.handler.adapters.DurationAdapter;
-import server.handler.adapters.LocalDataAdapter;
-
-import java.io.File;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 public class Main {
+
     public static void main(String[] args) {
-        TaskManager tm = Managers.loadFromFile(new File("resources\\saveFile.CSV"));
-        System.out.println("Поехали!");
-      //   tm.clearTasks();
-      //   tm.clearAllEpics();
-      //   addTasks(tm);
-        // addEpics(tm);
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDataAdapter())
-                .registerTypeAdapter(Duration.class, new DurationAdapter())
-                .setPrettyPrinting()
-                .create();
-        tm.removeEpic(22);
 
-
-       // Task task = gson.fromJson(str,Task.class);
-
-
-
-        //Task task = gson.fromJson();
-
-        Epic epic = new Epic("epic", "descr");
-        SubTask subTask = new SubTask("subtask", "description", epic.getId(),
-                "2024-01-01T19:13",
-                2);
-        String str = gson.toJson(epic);
-        String str2 = gson.toJson(subTask);
-
-        System.out.println(gson.fromJson(str2, SubTask.class));
-
-
-
-        printAllTasks(tm);
     }
 
     private static void addTasks(TaskManager tm) {

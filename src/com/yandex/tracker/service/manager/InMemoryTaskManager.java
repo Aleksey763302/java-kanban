@@ -50,6 +50,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addTask(Task task) {
         task.setId(giveID());
         if (checkTime(task)) {
+            task.setStatus(TaskStatus.NEW);
             tasks.put(task.getId(), task);
         }
     }

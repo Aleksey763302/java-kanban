@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.yandex.tracker.model.Epic;
 import com.yandex.tracker.model.SubTask;
 import com.yandex.tracker.model.TaskStatus;
+import server.HttpTaskServer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class EpicHandler extends BaseHttpHandler implements HttpHandler {
-
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
         Endpoint endpoint = getEndpoint(httpExchange.getRequestURI().getPath(), httpExchange.getRequestMethod());
@@ -25,12 +25,12 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
         String messageForNotFoundId = "Эпик с ID %d не найден";
         switch (endpoint) {
             case GET_EPICS -> {
-                String response = gson.toJson(taskManager.getAllEpics());
+                String response = gson.toJson(HttpTaskServer.getTaskManager().getAllEpics());
                 sendText(httpExchange, response, 200);
             }
             case GET_EPIC_BY_ID -> {
                 int id = getTaskIdFromURI(httpExchange);
-                Optional<Epic> epic = taskManager.searchEpic(id);
+                Optional<Epic> epic = HttpTaskServer.getTaskManager().searchEpic(id);
                 if (epic.isPresent()) {
                     String epicJson = gson.toJson(epic.get());
                     sendText(httpExchange, epicJson, 200);
@@ -41,12 +41,12 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
             }
             case GET_EPIC_SUBTASKS -> {
                 int id = getTaskIdFromURI(httpExchange);
-                Optional<Epic> epicOptional = taskManager.searchEpic(id);
+                Optional<Epic> epicOptional = HttpTaskServer.getTaskManager().searchEpic(id);
                 if (epicOptional.isEmpty()) {
                     String response = String.format(messageForNotFoundId, id);
                     sendNotFound(httpExchange, response);
                 }
-                List<SubTask> subtaskList = taskManager.getAllSubTasksEpic(id);
+                List<SubTask> subtaskList = HttpTaskServer.getTaskManager().getAllSubTasksEpic(id);
                 if (!subtaskList.isEmpty()) {
                     sendText(httpExchange, gson.toJson(subtaskList), 200);
                 } else {
@@ -55,13 +55,13 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
             }
             case POST_EPICS -> {
                 Epic epic = parseEpic(body);
-                taskManager.addEpic(epic);
-                sendText(httpExchange, gson.toJson(epic), 200);
+                HttpTaskServer.getTaskManager().addEpic(epic);
+                sendText(httpExchange, gson.toJson(epic), 201);
             }
             case DELETE_EPIC -> {
                 int id = getTaskIdFromURI(httpExchange);
-                if (taskManager.getSetId().contains(id)) {
-                    taskManager.removeEpic(id);
+                if (HttpTaskServer.getTaskManager().getSetId().contains(id)) {
+                    HttpTaskServer.getTaskManager().removeEpic(id);
                     sendText(httpExchange, "Эпик удален", 200);
                 } else {
                     String response = String.format(messageForNotFoundId, id);
