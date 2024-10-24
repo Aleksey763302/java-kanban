@@ -145,9 +145,9 @@ class InMemoryTaskManagerTest {
     void updateEpicAndSubtask() {
         Epic epic = new Epic("Test updateEpic", "Test updateEpic description");
         taskManager.addEpic(epic);
-        SubTask subTask1 = new SubTask("subtaskE1", "description", 0, "2024-11-11T22:25", 2);
+        SubTask subTask1 = new SubTask("subtaskE1", "description", 0, "2024-11-11T21:25", 1);
         taskManager.addSubTask(subTask1);
-        SubTask subTask2 = new SubTask("subtaskE2", "description", 0, "2024-11-13T22:25", 2);
+        SubTask subTask2 = new SubTask("subtaskE2", "description", 0, "2024-11-13T23:25", 2);
         taskManager.addSubTask(subTask2);
         final int epicId = epic.getId();
         final int subtaskId1 = subTask1.getId();

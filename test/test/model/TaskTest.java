@@ -5,6 +5,9 @@ import com.yandex.tracker.model.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
@@ -12,8 +15,8 @@ class TaskTest {
 
     @BeforeEach
     public void beforeEach() {
-        task = new Task("Name", "Description",
-                "2024-01-01T12:13", 2);
+        task = new Task("Name", "Description", TaskStatus.NEW,
+                LocalDateTime.parse("2024-01-01T12:13"), Duration.ofHours(2), 0);
     }
 
     @Test

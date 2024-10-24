@@ -1,11 +1,14 @@
 package test.service;
 
 import com.yandex.tracker.model.Task;
+import com.yandex.tracker.model.TaskStatus;
 import com.yandex.tracker.service.history.HistoryManager;
 import com.yandex.tracker.service.Managers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +25,8 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void getHistory() {
-        Task task = new Task("Test write in file", "description",
-                "2024-01-01T13:01", 2);
+        Task task = new Task("Name", "Description", TaskStatus.NEW,
+                LocalDateTime.parse("2024-01-01T12:13"), Duration.ofHours(2), 0);
         ArrayList<Task> history = new ArrayList<>();
         history.add(task);
         historyManager.add(task);
